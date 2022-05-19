@@ -1,0 +1,52 @@
+test = double(imread('sampletest.png'));%to be able to do matrix calculation train = double(imread('sampletrain.png'));%to be able to do matrix calculation y=test(find(train~=0));%setup the y for the least squares equation 
+gamma=train(find(train~=0));%setup gamma for least squares equation 
+a=(inv(gamma.'*gamma))*gamma.'*y;%solve for a using least squares equation 
+newtrain=imageTrain.*a; 
+dist=zeros(500,5000);%initialize a matrix to hold all distances for pixels 
+for s=1:500%iterate through all test images 
+  for i=1:5000%iterate through all training images 
+    for j=1:28%go through all pixels 
+      for k=1:28%calculate the distances between train and test pixels 
+        dist(s,i)=dist(s,i)+(abs(imageTestNew(j,k,s)-newtrain(j,k,i))^2); 
+      end 
+    end 
+    dist(s,i)=sqrt(dist(s,i));%square root the distance like in formula 
+  end 
+end 
+[minVal,minIndex]=min(dist,[],2);%find the min distance for each test image Predicted=labelTrain(minIndex);%labels for all min distance test images 
+[rowse,col]=size(find(Predicted~=labelTestNew));%to find amount of total error Perrortotal=rowse/500;%find total error rate 
+Perrors=zeros(10,1);%initialize errors for each class 
+totalerror=0;%just to make sure my errors for each class code works 
+for l=0:9%for each class find error 
+  classpredicted=Predicted(find(labelTestNew==l));%find what my NN classified [rows,col]=size(classpredicted);%rows to calculate error rate 
+  [errors,col1]=size(find(classpredicted~=l));%find amount of errors 
+  Perrors(l+1)=errors/rows;%store error rate for each class 
+  totalerror=totalerror+errors;%keep track of total error to compare 
+end 
+Perrorss=totalerror/500;%make sure code worked to compare total errors x=[0,1,2,3,4,5,6,7,8,9];%make the x values for my errors graph 
+figure; 
+bar(x,Perrors);%bar graph of class errors 
+dist=zeros(500,5000);%initialize a matrix to hold all distances for pixels 
+for s=1:500%iterate through all test images 
+  for i=1:5000%iterate through all training images 
+    for j=1:28%go through all pixels 
+      for k=1:28%calculate the distances between train and test pixels 
+        dist(s,i)=dist(s,i)+(abs(imageTestNew(j,k,s)-imageTrain(j,k,i))^2);
+      end 
+    end 
+    dist(s,i)=sqrt(dist(s,i));%square root the distance like in formula 
+  end 
+end 
+[minVal,minIndex]=min(dist,[],2);%find the min distance for each test image Predicted=labelTrain(minIndex);%labels for all min distance test images 
+[rowse,col]=size(find(Predicted~=labelTestNew));%to find amount of total error Perrortotal1=rowse/500;%find total error rate 
+Perrors1=zeros(10,1);%initialize errors for each class 
+totalerror=0;%just to make sure my errors for each class code works 
+for l=0:9%for each class find error 
+  classpredicted=Predicted(find(labelTestNew==l));%find what my NN classified [rows,col]=size(classpredicted);%rows to calculate error rate 
+  [errors,col1]=size(find(classpredicted~=l));%find amount of errors 
+  Perrors1(l+1)=errors/rows;%store error rate for each class 
+  totalerror=totalerror+errors;%keep track of total error to compare 
+end 
+Perrorss1=totalerror/500;%make sure code worked to compare total errors x=[0,1,2,3,4,5,6,7,8,9];%make the x values for my errors graph 
+figure; 
+bar(x,Perrors1);%bar graph of class errors
